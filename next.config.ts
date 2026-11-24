@@ -29,6 +29,8 @@ const noStore = [
 const nextConfig: NextConfig = {
   output: "standalone",
   serverExternalPackages: ["better-sqlite3"],
+  // 휴대폰에서 PC의 IP로 개발 서버를 열 때 화면 스크립트가 막히지 않게 합니다.
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*"],
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
