@@ -3,6 +3,7 @@ import { getDb, getSetting, type AppDatabase } from "@/db";
 import { aiUsageLogs, cases, judgmentJobs, judges, questions, statements, verdicts } from "@/db/schema";
 import { applyPersona } from "@/lib/ai/persona";
 import { getProvider } from "@/lib/ai/provider";
+import { readAiRuntime } from "@/server/ai-settings";
 import { classifySchema, verdictSchema, type AiUsage, type ClassifyResult } from "@/lib/ai/schema";
 import { PROMPT_VERSION, SAFETY_HELP } from "@/lib/constants";
 import { AppError } from "@/lib/errors";
@@ -188,7 +189,7 @@ async function runClaimedJob(db: AppDatabase, job: typeof judgmentJobs.$inferSel
     return;
   }
 
-  const provider = getProvider();
+  const provider = getProvider(readAiRuntime());
   const input = {
     mode: row.mode as Mode,
     title: row.title,
