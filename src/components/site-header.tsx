@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/judge-art";
 
 export function SiteHeader() {
   return (
     <header className="border-b-2 border-ink bg-sun">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 text-xl font-black">
-          <span aria-hidden className="grid h-9 w-9 place-items-center rounded-[8px] border-2 border-ink bg-hero text-lg text-sun">
-            ⚖
-          </span>
+          <LogoMark />
           땅땅!
         </Link>
         <nav className="hidden items-center gap-5 text-sm font-black sm:flex">
