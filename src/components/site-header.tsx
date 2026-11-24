@@ -31,8 +31,10 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto max-w-[1200px] px-4 py-8 text-sm font-bold text-ink/80">
-      회원가입 없이 이용 · 재미용이며 법적 효력 없음
+    <footer className="mx-auto flex max-w-[1200px] flex-wrap gap-x-4 gap-y-2 px-4 py-8 text-sm font-bold text-ink/80">
+      <span>회원가입 없이 이용 · 재미용이며 법적 효력 없음</span>
+      <Link href="/terms">이용약관</Link>
+      <Link href="/privacy">개인정보 처리방침</Link>
     </footer>
   );
 }
