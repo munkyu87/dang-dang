@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:-dev-auth-secret-dangdang}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me}
+      DATABASE_PATH: /data/dangdang.sqlite
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      TRUST_PROXY: "1"
+    volumes:
+      - dangdang-data:/data
+    expose:
+      - "3000"
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - app
+
+volumes:
+  dangdang-data:
