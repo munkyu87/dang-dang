@@ -2,6 +2,7 @@ import { CLASSIFY_SYSTEM, JUDGE_SYSTEM } from "@/lib/ai/prompt";
 import { classifySchema, verdictSchema, type AiResult, type AiUsage, type ClassifyResult, type VerdictDraft } from "@/lib/ai/schema";
 import { mockClassify, mockJudge, type ClassifyInput, type JudgeInput } from "@/lib/ai/mock";
 import { AppError } from "@/lib/errors";
+import type { AiRuntime } from "@/server/ai-settings";
 
 export type AiProvider = {
   classify(input: ClassifyInput): Promise<AiResult<ClassifyResult>>;
@@ -17,11 +18,11 @@ const mockProvider: AiProvider = {
   },
 };
 
-async function openAiJson(system: string, payload: unknown): Promise<{ text: string; usage: AiUsage }> {
-  const key = process.env.AI_API_KEY;
+async function openAiJson(runtime: AiRuntime, system: string, payload: unknown): Promise<{ text: string; usage: AiUsage }> {
+  const key = runtime.apiKey;
   if (!key) throw new AppError(503, "AI_UNAVAILABLE", "AI 설정이 없습니다.");
-  const base = (process.env.AI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
-  const model = process.env.AI_MODEL || "gpt-4o-mini";
+  const base = runtime.baseUrl.replace(/\/$/, "");
+  const model = runtime.model;
   const response = await fetch(`${base}/chat/completions`, {
     method: "POST",
     headers: {
@@ -51,19 +52,21 @@ async function openAiJson(system: string, payload: unknown): Promise<{ text: str
   return { text, usage: { model, inputTokens, outputTokens, costKrw } };
 }
 
-const openAiProvider: AiProvider = {
-  async classify(input) {
-    const { personaKey: _persona, ...safe } = input as JudgeInput;
-    const result = await openAiJson(CLASSIFY_SYSTEM, safe);
-    return { data: classifySchema.parse(JSON.parse(result.text)), usage: result.usage };
-  },
-  async judge(input) {
-    const { personaKey: _persona, ...safe } = input;
-    const result = await openAiJson(JUDGE_SYSTEM, safe);
-    return { data: verdictSchema.parse(JSON.parse(result.text)), usage: result.usage };
-  },
-};
+function openAiProvider(runtime: AiRuntime): AiProvider {
+  return {
+    async classify(input) {
+      const { personaKey: _persona, ...safe } = input as JudgeInput;
+      const result = await openAiJson(runtime, CLASSIFY_SYSTEM, safe);
+      return { data: classifySchema.parse(JSON.parse(result.text)), usage: result.usage };
+    },
+    async judge(input) {
+      const { personaKey: _persona, ...safe } = input;
+      const result = await openAiJson(runtime, JUDGE_SYSTEM, safe);
+      return { data: verdictSchema.parse(JSON.parse(result.text)), usage: result.usage };
+    },
+  };
+}
 
-export function getProvider(): AiProvider {
-  return process.env.AI_PROVIDER === "openai" ? openAiProvider : mockProvider;
+export function getProvider(runtime: AiRuntime): AiProvider {
+  return runtime.provider === "openai" ? openAiProvider(runtime) : mockProvider;
 }

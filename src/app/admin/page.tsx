@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { AdminSettings } from "@/components/admin-settings";
+import { readAiPublic } from "@/server/ai-settings";
 import { adminOverview } from "@/server/cases";
 import { requireAdmin } from "@/server/current";
 
@@ -31,7 +32,7 @@ export default async function AdminPage() {
           ))}
         </ul>
       </section>
-      <AdminSettings budget={metrics.budget} caseLimit={metrics.caseLimit} />
+      <AdminSettings budget={metrics.budget} caseLimit={metrics.caseLimit} ai={readAiPublic()} />
     </div>
   );
 }
