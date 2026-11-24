@@ -1,13 +1,25 @@
-const JUDGE_SRC: Record<string, string> = {
-  principle: "/judges/principle.svg",
-  mediator: "/judges/mediator.svg",
-  direct: "/judges/direct.svg",
-  humor: "/judges/humor.svg",
-  satto: "/judges/satto.svg",
-};
+export type JudgeExpression = "base" | "think" | "question" | "verdict";
 
-export function JudgeArt({ persona, className = "h-40 w-40" }: { persona: string; className?: string }) {
-  const src = JUDGE_SRC[persona] ?? JUDGE_SRC.direct;
+const JUDGES = ["principle", "mediator", "direct", "humor", "satto"] as const;
+
+export function judgeExpressionForStatus(status: string): JudgeExpression {
+  if (status === "QUESTIONING") return "question";
+  if (status === "WAITING" || status === "READY" || status === "JUDGING") return "think";
+  if (status === "COMPLETED" || status === "INCONCLUSIVE") return "verdict";
+  return "base";
+}
+
+export function JudgeArt({
+  persona,
+  expression = "base",
+  className = "h-40 w-40",
+}: {
+  persona: string;
+  expression?: JudgeExpression;
+  className?: string;
+}) {
+  const name = JUDGES.includes(persona as (typeof JUDGES)[number]) ? persona : "direct";
+  const src = expression === "base" ? `/judges/${name}.svg` : `/judges/${name}-${expression}.svg`;
   return <img src={src} alt="" className={`${className} object-contain`} />;
 }
 

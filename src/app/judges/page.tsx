@@ -1,4 +1,4 @@
-import { JudgeArt } from "@/components/judge-art";
+import { JudgeArt, type JudgeExpression } from "@/components/judge-art";
 import { JUDGES } from "@/lib/judges";
 
 export default function JudgesPage() {
@@ -14,6 +14,11 @@ export default function JudgesPage() {
               <h2 className="text-xl font-black">{judge.name}</h2>
               <p className="font-bold">{judge.summary}</p>
               <p className="mt-2">“{judge.line}”</p>
+              <div className="mt-3 flex gap-2">
+                {(["think", "question", "verdict"] as JudgeExpression[]).map((expression) => (
+                  <JudgeArt key={expression} persona={judge.personaKey} expression={expression} className="h-12 w-12" />
+                ))}
+              </div>
             </div>
           </article>
         ))}
