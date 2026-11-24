@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, TextArea } from "@/components/ui/field";
@@ -59,7 +60,16 @@ export function StatementForm({
       <section className="press bg-white p-5">
         <FieldLabel>내 진술 · {body.length}/2000</FieldLabel>
         <TextArea value={body} maxLength={2000} onChange={(event) => setBody(event.target.value)} placeholder="그때 무슨 일이 있었는지 적어 주세요." />
-        <p className="mt-2 text-sm font-bold">거친 표현도 그대로 둡니다. 제출하면 수정할 수 없고, 상대에게 원문은 보이지 않습니다.</p>
+        <p className="mt-2 text-sm font-bold">
+          거친 표현도 그대로 둡니다. 제출하면 수정할 수 없고, 상대에게 원문은 보이지 않습니다. 실제 AI를 연결한 경우 이 내용은 판결을 위해 외부 AI로 전송됩니다.{" "}
+          <Link href="/terms" className="underline">
+            이용약관
+          </Link>
+          {" · "}
+          <Link href="/privacy" className="underline">
+            개인정보 처리방침
+          </Link>
+        </p>
       </section>
       {solo ? (
         <section className="press bg-party-a/40 p-5">
