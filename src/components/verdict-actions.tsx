@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
+import { shareToKakao } from "@/lib/kakao-share";
 import type { CaseView } from "@/lib/types";
 
-export function VerdictActions({ view }: { view: CaseView }) {
+export function VerdictActions({ view, kakaoKey }: { view: CaseView; kakaoKey: string }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState("");
@@ -36,12 +37,35 @@ export function VerdictActions({ view }: { view: CaseView }) {
     });
   }
 
+  async function ensureSharePath() {
+    if (sharePath) return sharePath;
+    const data = await api<{ token: string }>(`/api/cases/${view.id}/share`, { method: "POST", body: "{}" });
+    const path = `/share/${data.token}`;
+    sessionStorage.setItem(`dd-share-${view.id}`, path);
+    setSharePath(path);
+    return path;
+  }
+
   async function makeShare() {
     await run("share", async () => {
-      const data = await api<{ token: string }>(`/api/cases/${view.id}/share`, { method: "POST", body: "{}" });
-      const path = `/share/${data.token}`;
-      sessionStorage.setItem(`dd-share-${view.id}`, path);
-      setSharePath(path);
+      await ensureSharePath();
+    });
+  }
+
+  async function kakaoShare() {
+    await run("kakao", async () => {
+      if (!kakaoKey) throw new Error("관리자 페이지에 카카오 JavaScript 키를 넣어 주세요.");
+      const path = await ensureSharePath();
+      const url = window.location.origin + path;
+      const description = view.verdict
+        ? `${view.mode === "SOLO" ? "단독 진술" : "양측 직접 진술"}. ${view.verdict.order} 재미용이며 법적 효력 없음.`
+        : "재미용 가상 판결이며 법적 효력 없음.";
+      await shareToKakao(kakaoKey, {
+        title: "땅땅! 판결 나왔습니다",
+        description: description.slice(0, 90),
+        url,
+        imageUrl: `${url}/opengraph-image`,
+      });
     });
   }
 
@@ -94,6 +118,11 @@ export function VerdictActions({ view }: { view: CaseView }) {
         <Button type="button" variant="hero" disabled={!canShare || pending !== ""} onClick={makeShare}>
           {pending === "share" ? "만드는 중…" : "공유 링크 만들기"}
         </Button>
+        {kakaoKey ? (
+          <Button type="button" disabled={!canShare || pending !== ""} onClick={kakaoShare}>
+            {pending === "kakao" ? "여는 중…" : "카카오톡으로 보내기"}
+          </Button>
+        ) : null}
         <Button type="button" variant="white" disabled={!canShare} onClick={downloadPng}>
           PNG 저장
         </Button>

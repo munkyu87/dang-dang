@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
+import { shareToKakao } from "@/lib/kakao-share";
 
 export function InviteClaim({ token }: { token: string }) {
   const router = useRouter();
@@ -32,7 +33,7 @@ export function InviteClaim({ token }: { token: string }) {
   );
 }
 
-export function InviteLinks({ caseId }: { caseId: string }) {
+export function InviteLinks({ caseId, kakaoKey }: { caseId: string; kakaoKey: string }) {
   const [bToken, setBToken] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -74,6 +75,27 @@ export function InviteLinks({ caseId }: { caseId: string }) {
         <Button type="button" onClick={rotate}>
           링크 다시 만들기
         </Button>
+        {kakaoKey ? (
+          <Button
+            type="button"
+            variant="hero"
+            disabled={!bToken}
+            onClick={() => {
+              if (!bToken) return;
+              const url = `${window.location.origin}/invite/${bToken}`;
+              void shareToKakao(kakaoKey, {
+                title: "땅땅! 함께 재판하자",
+                description: "각자 할 말은 해야지. 재미용이며 법적 효력 없음.",
+                url,
+                imageUrl: `${window.location.origin}/opengraph-image`,
+              }).catch((caught: unknown) => {
+                setError(caught instanceof Error ? caught.message : "카카오톡 공유를 열지 못했습니다.");
+              });
+            }}
+          >
+            카카오톡으로 초대
+          </Button>
+        ) : null}
       </div>
       {error ? <p className="mt-3 font-black text-danger">{error}</p> : null}
     </section>

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AdminSettings } from "@/components/admin-settings";
 import { readAiPublic } from "@/server/ai-settings";
+import { readKakaoKey } from "@/server/kakao-settings";
 import { adminOverview } from "@/server/cases";
 import { requireAdmin } from "@/server/current";
 
@@ -32,7 +33,7 @@ export default async function AdminPage() {
           ))}
         </ul>
       </section>
-      <AdminSettings budget={metrics.budget} caseLimit={metrics.caseLimit} ai={readAiPublic()} />
+      <AdminSettings budget={metrics.budget} caseLimit={metrics.caseLimit} ai={readAiPublic()} kakao={readKakaoKey()} />
     </div>
   );
 }
