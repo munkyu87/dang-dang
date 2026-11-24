@@ -7,7 +7,7 @@ import { JudgeArt } from "@/components/judge-art";
 const copy: Record<string, string> = {
   WAITING: "상대 진술을 기다리고 있습니다.",
   READY: "양쪽 이야기가 모여 판결을 준비합니다.",
-  QUESTIONING: "추가 질문이 있습니다.",
+  QUESTIONING: "상대에게 추가 질문이 전달됐습니다.",
   JUDGING: "진술을 읽고 판결문을 쓰고 있습니다.",
   FAILED: "판결을 마치지 못했습니다.",
 };
@@ -35,8 +35,15 @@ export function StatusLive({
       if (document.hidden) return;
       const response = await fetch(`/api/cases/${caseId}/status`, { cache: "no-store" });
       if (!response.ok) return;
-      const body = (await response.json()) as { data?: { status?: string } };
-      const next = body.data?.status;
+      const body = (await response.json()) as {
+        data?: { view?: { status?: string; question?: { text: string } | null } };
+      };
+      const nextView = body.data?.view;
+      if (nextView?.question) {
+        router.push(`/case/${caseId}/question`);
+        return;
+      }
+      const next = nextView?.status;
       if (next && ["COMPLETED", "INCONCLUSIVE", "BLOCKED", "FAILED"].includes(next)) {
         router.push(`/case/${caseId}/verdict`);
         return;
