@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 140">
+  <rect x="4" y="4" width="412" height="132" rx="22" fill="#7652F4" stroke="#18171B" stroke-width="4"/>
+  <g transform="translate(16 16) scale(1.25) rotate(-14 40 40)">
+    <rect x="34" y="28" width="12" height="34" rx="4" fill="#FFE34F" stroke="#18171B" stroke-width="4"/>
+    <rect x="8" y="10" width="64" height="22" rx="5" fill="#FFE34F" stroke="#18171B" stroke-width="4"/>
+    <path d="M24 10v22M56 10v22" stroke="#18171B" stroke-width="3"/>
+  </g>
+  <text x="188" y="92" fill="#FFE34F" font-family="Noto Sans KR, Malgun Gothic, sans-serif" font-size="64" font-weight="900">땅땅!</text>
+</svg>

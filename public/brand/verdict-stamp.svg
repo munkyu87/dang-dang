@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <circle cx="80" cy="80" r="70" fill="none" stroke="#B42318" stroke-width="6"/>
+  <circle cx="80" cy="80" r="58" fill="none" stroke="#B42318" stroke-width="3"/>
+  <text x="80" y="62" text-anchor="middle" fill="#B42318" font-family="Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="900">DDANG!</text>
+  <text x="80" y="88" text-anchor="middle" fill="#B42318" font-family="Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="900">가상 판결</text>
+  <text x="80" y="110" text-anchor="middle" fill="#B42318" font-family="Noto Sans KR, Malgun Gothic, sans-serif" font-size="13" font-weight="800">FOR FUN</text>
+</svg>
