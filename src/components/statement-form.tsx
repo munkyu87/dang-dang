@@ -47,7 +47,7 @@ export function StatementForm({
         body: JSON.stringify({ body, reportedOther: solo ? reported : undefined }),
       });
       localStorage.removeItem(storageKey);
-      router.push(`/case/${caseId}/status`);
+      router.push(`/case/${caseId}`);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "제출하지 못했습니다.");
       setPending(false);
