@@ -20,7 +20,17 @@ const keyLabel: Record<AiPublic["keySource"], string> = {
   none: "저장된 키가 없습니다. openai를 고르면 판결이 실패합니다.",
 };
 
-export function AdminSettings({ budget, caseLimit, ai }: { budget: number; caseLimit: number; ai: AiPublic }) {
+export function AdminSettings({
+  budget,
+  caseLimit,
+  ai,
+  kakao,
+}: {
+  budget: number;
+  caseLimit: number;
+  ai: AiPublic;
+  kakao: { javascriptKey: string; source: "admin" | "env" | "none" };
+}) {
   const router = useRouter();
   const [dailyBudgetKrw, setBudget] = useState(String(budget));
   const [dailyCaseLimit, setLimit] = useState(String(caseLimit));
@@ -29,6 +39,8 @@ export function AdminSettings({ budget, caseLimit, ai }: { budget: number; caseL
   const [model, setModel] = useState(ai.model);
   const [apiKey, setApiKey] = useState("");
   const [clearApiKey, setClearApiKey] = useState(false);
+  const [kakaoKey, setKakaoKey] = useState(kakao.javascriptKey);
+  const [clearKakaoKey, setClearKakaoKey] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -46,6 +58,8 @@ export function AdminSettings({ budget, caseLimit, ai }: { budget: number; caseL
           model,
           apiKey,
           clearApiKey: clearApiKey && apiKey.trim() === "",
+          kakaoJavaScriptKey: clearKakaoKey ? "" : kakaoKey,
+          clearKakaoKey,
         }),
       });
       setApiKey("");
@@ -109,6 +123,24 @@ export function AdminSettings({ budget, caseLimit, ai }: { budget: number; caseL
             </label>
           ) : null}
         </div>
+      </section>
+      <section className="press bg-white p-5">
+        <h2 className="font-black">카카오톡 공유</h2>
+        <p className="mt-2 text-sm font-bold">
+          사용자는 카카오에 로그인하지 않습니다. 카카오 디벨로퍼스에서 발급한 JavaScript 키이고, 사이트 도메인에 이 주소를 등록해야 버튼이 열립니다.
+          {kakao.source === "env" ? " 지금은 환경변수 키를 사용 중입니다." : ""}
+          {kakao.source === "none" ? " 키가 없으면 공유 버튼이 나오지 않습니다." : ""}
+        </p>
+        <label className="mt-3 block">
+          <FieldLabel>JavaScript 키</FieldLabel>
+          <TextInput value={kakaoKey} spellCheck={false} onChange={(event) => setKakaoKey(event.target.value)} />
+        </label>
+        {kakao.source === "admin" ? (
+          <label className="mt-3 flex items-center gap-2 font-bold">
+            <input type="checkbox" checked={clearKakaoKey} onChange={(event) => setClearKakaoKey(event.target.checked)} />
+            저장된 키 지우기
+          </label>
+        ) : null}
       </section>
       {error ? <p className="font-black text-danger">{error}</p> : null}
       <Button type="button" disabled={pending} onClick={save}>

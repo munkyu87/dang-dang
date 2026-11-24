@@ -3,6 +3,7 @@ import { VerdictCard } from "@/components/verdict-card";
 import { SAFETY_HELP } from "@/lib/constants";
 import { sourceLabel } from "@/lib/utils";
 import { asView, loadOwnedCase } from "@/server/case-page";
+import { readKakaoKey } from "@/server/kakao-settings";
 import { ClosedCase } from "@/components/closed-case";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export default async function VerdictPage({ params }: { params: Promise<{ id: st
           <p className="mt-3 text-sm font-bold">원문이 아니라 요약입니다.</p>
         </section>
       ) : null}
-      <VerdictActions view={view} />
+      <VerdictActions view={view} kakaoKey={readKakaoKey().javascriptKey} />
     </div>
   );
 }
