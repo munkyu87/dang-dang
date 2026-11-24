@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { JudgeArt } from "@/components/judge-art";
+import { JudgeArt, judgeExpressionForStatus } from "@/components/judge-art";
 
 const copy: Record<string, string> = {
   WAITING: "상대 진술을 기다리고 있습니다.",
@@ -59,7 +59,7 @@ export function StatusLive({
 
   return (
     <section className="press bg-white p-5">
-      <JudgeArt persona={persona} className="h-28 w-28" />
+      <JudgeArt persona={persona} expression={judgeExpressionForStatus(status)} className="h-28 w-28" />
       <h1 className="mt-3 text-3xl font-black">{holdReason === "BUDGET" ? "오늘 판결 한도에 걸렸습니다" : "재판 진행"}</h1>
       <p className="mt-2 text-lg font-bold">{holdReason === "BUDGET" ? "이미 나온 결과는 볼 수 있고, 새 판결은 잠시 쉽니다." : copy[status] ?? "상태를 확인하고 있습니다."}</p>
       <ul className="mt-4 grid gap-2 font-black">

@@ -2,12 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { JudgeArt } from "@/components/judge-art";
 import { Button } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/field";
 import { api } from "@/lib/api-client";
 import { formatKst } from "@/lib/utils";
 
-export function QuestionForm({ caseId, question, expiresAt }: { caseId: string; question: string; expiresAt: number }) {
+export function QuestionForm({
+  caseId,
+  question,
+  expiresAt,
+  persona,
+}: {
+  caseId: string;
+  question: string;
+  expiresAt: number;
+  persona: string;
+}) {
   const router = useRouter();
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +38,8 @@ export function QuestionForm({ caseId, question, expiresAt }: { caseId: string; 
 
   return (
     <section className="press bg-white p-5">
-      <p className="text-sm font-black text-hero">판사님의 추가 질문 · {formatKst(expiresAt)}까지</p>
+      <JudgeArt persona={persona} expression="question" className="h-28 w-28" />
+      <p className="mt-3 text-sm font-black text-hero">판사님의 추가 질문 · {formatKst(expiresAt)}까지</p>
       <h1 className="mt-2 text-2xl font-black">{question}</h1>
       <TextArea className="mt-4" maxLength={500} value={answer} onChange={(event) => setAnswer(event.target.value)} />
       <p className="mt-2 text-sm font-bold">{answer.length}/500</p>

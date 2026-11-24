@@ -32,7 +32,7 @@ export function VerdictCard({
           <h1 className="mt-2 text-3xl font-black">{title ?? "혼자 재판"}</h1>
           <p className="mt-1 font-bold">{judgeName}</p>
         </div>
-        <JudgeArt persona={persona} className="h-24 w-24" />
+        <JudgeArt persona={persona} expression="verdict" className="h-24 w-24" />
       </div>
       {verdictType === "FAULT_RATIO" && fault ? (
         <div className="mt-6 grid grid-cols-2 gap-3">
